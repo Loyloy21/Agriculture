@@ -1,0 +1,18 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const native = fs.readFileSync('frontend/mobile/src/android/AndroidOriginalPhotoPicker.kt', 'utf8');
+const bridge = fs.readFileSync('frontend/mobile/src/services/androidSystemPhotoPicker.android.ts', 'utf8');
+const androidMap = fs.readFileSync('frontend/mobile/src/components/damage-location-map.android.tsx', 'utf8');
+assert(native.includes('Intent.ACTION_OPEN_DOCUMENT') && native.includes('EXTRA_ALLOW_MULTIPLE'));
+assert(native.includes('DocumentsContract.getDocumentId(selected)'));
+assert(native.includes('MediaStore.setRequireOriginal(mediaUri)'));
+assert(native.indexOf('MediaStore.setRequireOriginal(mediaUri)') < native.indexOf('resolver.openInputStream(selected)'), 'Original EXIF must be read before the selected file is copied');
+assert(native.includes('TAG_GPS_LATITUDE_REF') && native.includes('TAG_GPS_LONGITUDE_REF'));
+assert(native.includes('coordinates[0] == 0f && coordinates[1] == 0f'));
+assert(!native.includes('DISPLAY_NAME') && !native.includes('DATA ='), 'Never infer an original from its filename');
+assert(bridge.includes('ACCESS_MEDIA_LOCATION') && bridge.includes('READ_MEDIA_IMAGES'));
+assert(bridge.includes('selectedAuthority') && bridge.includes('exactMediaId') && bridge.includes('gpsState'));
+assert(!bridge.includes('getCurrentPositionAsync'), 'Gallery never borrows device GPS');
+assert(androidMap.includes('hasNativeGoogleMapsKey') && androidMap.includes('PROVIDER_GOOGLE'));
+assert(!androidMap.includes('Try embedded map'), 'Missing native key must never offer a crashing map mount');
+console.log('PASS: Android original picker requests native media access, reads exact selected original before copy, validates EXIF refs, logs safe reasons, never borrows device GPS. Native behavior still requires a phone build.');

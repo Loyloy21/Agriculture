@@ -1,84 +1,67 @@
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Image } from 'expo-image';
+import { StatusBar } from 'expo-status-bar';
+import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-const GREEN = '#4B842F';
-const LIGHT_GREEN = '#6EA94A';
-
-function LeafMark({ size }: { size: number }) {
-  return (
-    <View style={[styles.leafMark, { width: size, height: size }]} accessibilityLabel="AgriReach leaf logo">
-      <View style={[styles.leaf, styles.leftLeaf, { width: size * 0.25, height: size * 0.48 }]} />
-      <View style={[styles.leaf, styles.rightLeaf, { width: size * 0.25, height: size * 0.48 }]} />
-      <View style={[styles.stem, { height: size * 0.45 }]} />
-    </View>
-  );
-}
+import { AuthBrand, AuthIcon, AuthLandscape, authColors } from '@/components/auth-ui';
 
 export default function LandingScreen() {
   const { width, height } = useWindowDimensions();
-  const isTablet = width >= 600;
-  const contentWidth = Math.min(width * 0.88, isTablet ? 420 : 390);
-  const logoSize = Math.min(Math.max(width * 0.25, 104), isTablet ? 176 : 142);
-  const compactScreen = height < 680;
+  const contentWidth = Math.min(width - 40, 440);
+  const sceneryHeight = Math.min(Math.max(height * .38, 205), 350);
+
+  function handleLoginPress() {
+    router.push('/login');
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={[styles.content, { width: contentWidth }]}>
-        <View style={[styles.upperContent, compactScreen && styles.compactUpperContent]}>
-          <View style={[styles.logoCircle, { width: logoSize, height: logoSize, borderRadius: logoSize / 2 }]}>
-            <LeafMark size={logoSize} />
-          </View>
-          <Text style={[styles.title, { fontSize: isTablet ? 38 : 32 }]}>AgriReach</Text>
-          <Text style={[styles.subtitle, { fontSize: isTablet ? 19 : 16 }]}>Connecting farmers with support</Text>
+      <StatusBar style="dark" />
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        <View style={[styles.scenery, { height: sceneryHeight }]} accessible={false}>
+          <Image source={require('@/assets/images/redesign/home-hero.jpg')} style={styles.image} contentFit="cover" contentPosition={{ left: '50%', top: '65%' }} />
+          <View style={styles.wave} />
         </View>
-
+        <View style={[styles.content, { width: contentWidth }]}>
+          <AuthBrand large />
+          <Text style={styles.subtitle}>Connecting farmers{ '\n' }with support</Text>
+          <View style={styles.goldRule} />
         <View style={styles.actions}>
           <Pressable
             accessibilityRole="button"
-            onPress={() => router.push('/login')}
+            onPress={handleLoginPress}
             style={({ pressed }) => [styles.button, styles.loginButton, pressed && styles.pressed]}
           >
-            <Text style={styles.loginText}>Login</Text>
+            <Text style={styles.loginText}>Login</Text><AuthIcon name="arrow" color={authColors.paper} />
           </Pressable>
           <Pressable
             accessibilityRole="button"
             onPress={() => router.push('/register')}
             style={({ pressed }) => [styles.button, styles.registerButton, pressed && styles.pressed]}
           >
-            <Text style={styles.registerText}>Register</Text>
+            <Text style={styles.registerText}>Register</Text><AuthIcon name="arrow" />
           </Pressable>
         </View>
-      </View>
+          <View style={styles.footer}><Text style={styles.city}>Cabadbaran City</Text><Text style={styles.tagline}>STRONGER FARMERS{ '\n' }BRIGHTER TOMORROWS</Text></View>
+        </View>
+        <AuthLandscape />
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: GREEN },
-  content: {
-    flex: 1,
-    alignSelf: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 4,
-    paddingTop: '10%',
-    paddingBottom: '5%',
-  },
-  upperContent: { alignItems: 'center', justifyContent: 'center', flex: 1, gap: 12 },
-  compactUpperContent: { gap: 7 },
-  logoCircle: { backgroundColor: LIGHT_GREEN, alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
-  leafMark: { alignItems: 'center', justifyContent: 'center' },
-  leaf: { position: 'absolute', backgroundColor: '#FFFFFF', borderRadius: 100 },
-  leftLeaf: { transform: [{ rotate: '-38deg' }, { translateX: -10 }, { translateY: -10 }] },
-  rightLeaf: { transform: [{ rotate: '38deg' }, { translateX: 10 }, { translateY: -10 }] },
-  stem: { width: 5, backgroundColor: '#FFFFFF', borderRadius: 5, transform: [{ translateY: 13 }] },
-  title: { color: '#FFFFFF', fontWeight: '800', textAlign: 'center' },
-  subtitle: { color: '#FFFFFF', textAlign: 'center', fontWeight: '400' },
-  actions: { width: '100%', gap: 14 },
-  button: { width: '100%', minHeight: 56, alignItems: 'center', justifyContent: 'center', borderRadius: 18 },
-  loginButton: { backgroundColor: '#FFFFFF' },
-  registerButton: { borderWidth: 2, borderColor: '#FFFFFF', backgroundColor: 'transparent' },
-  loginText: { color: GREEN, fontSize: 17, fontWeight: '700' },
-  registerText: { color: '#FFFFFF', fontSize: 17, fontWeight: '700' },
+  safeArea: { flex: 1, backgroundColor: authColors.ivory }, scroll: { flexGrow: 1, paddingBottom: 18 },
+  scenery: { width: '100%', overflow: 'hidden' }, image: { width: '100%', height: '100%' },
+  wave: { position: 'absolute', bottom: -38, left: '-10%', width: '120%', height: 68, borderTopLeftRadius: 160, borderTopRightRadius: 260, backgroundColor: authColors.ivory, transform: [{ rotate: '4deg' }] },
+  content: { alignSelf: 'center', alignItems: 'center', paddingTop: 8, paddingBottom: 35, zIndex: 1 },
+  subtitle: { color: authColors.deep, fontSize: 17, lineHeight: 24, textAlign: 'center', letterSpacing: 1.6, marginTop: 8 },
+  goldRule: { width: 32, height: 2, backgroundColor: authColors.gold, marginVertical: 17 },
+  actions: { width: '100%', gap: 12 },
+  button: { width: '100%', minHeight: 54, flexDirection: 'row', gap: 14, alignItems: 'center', justifyContent: 'center', borderRadius: 28, paddingVertical: 12, paddingHorizontal: 16 },
+  loginButton: { backgroundColor: authColors.forest }, registerButton: { borderWidth: 1, borderColor: authColors.forest },
+  loginText: { color: authColors.paper, fontSize: 17, fontWeight: '700' }, registerText: { color: authColors.forest, fontSize: 17, fontWeight: '700' },
+  footer: { alignItems: 'center', marginTop: 24 }, city: { color: authColors.deep, fontSize: 13, fontWeight: '600' },
+  tagline: { color: authColors.muted, fontSize: 9, lineHeight: 15, letterSpacing: 2, textAlign: 'center', marginTop: 6 },
   pressed: { opacity: 0.78 },
 });

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500" role="img" aria-labelledby="title desc">
+  <title id="title">AgriReach sample damage report image</title>
+  <desc id="desc">Placeholder image used for sample damage report testing.</desc>
+  <rect width="800" height="500" fill="#eaf5ed"/>
+  <path d="M0 360 170 230l120 92 115-145 180 165 95-70 120 88v140H0Z" fill="#9bc9a7"/>
+  <circle cx="650" cy="120" r="54" fill="#f4c96b"/>
+  <text x="400" y="440" fill="#2f8f5b" font-family="Arial,sans-serif" font-size="28" text-anchor="middle">AgriReach Sample Damage Image</text>
+</svg>

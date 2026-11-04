@@ -1,0 +1,3 @@
+# Compatibility: admin stylesheets, scripts and images moved to admin/assets/.
+# Old URLs (bookmarks, cached pages, seeded "../assets/images/..." references) redirect there.
+RedirectMatch 301 ^(.*)/assets/(.*)$ $1/admin/assets/$2

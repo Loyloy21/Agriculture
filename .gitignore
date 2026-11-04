@@ -31,7 +31,32 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
+.env.*
+!.env.example
 .env*.local
+
+# local agent settings
+.claude/settings.local.json
+
+# credentials
+*.crt
+*.local.php
+*.keystore
+google-services.json
+GoogleService-Info.plist
+
+# backups, archives and database dumps (schema and migration .sql files are allowed)
+*.zip
+*.7z
+*.rar
+*.tar
+*.gz
+*.bak
+*.dump
+*.backup
+*dump*.sql
+*backup*.sql
 
 # typescript
 *.tsbuildinfo

@@ -1,0 +1,37 @@
+# AgriReach public URL routing (Apache / XAMPP).
+# The code lives in backend/ and frontend/, but the public URLs are unchanged:
+#   /CAPSTONE AGRICULTURE/api/...    ->  backend/api/...
+#   /CAPSTONE AGRICULTURE/admin/...  ->  frontend/admin/...
+# These are internal rewrites: browsers and the mobile app keep the same URLs, and the request method,
+# body, query string and Authorization header pass through unchanged.
+# tests/support/router.php applies the same rules for PHP's built-in server (which ignores .htaccess).
+
+# No directory listings anywhere in the project.
+Options -Indexes
+
+RewriteEngine On
+
+# Deny by default: from outside, only the public routes exist (admin/, api/, the root redirect and the old
+# config/logout.php compatibility route). Data and tooling folders (storage, uploads, tmp, var, tools, database,
+# scripts, tests, vendor, docs, .expo ...) answer 404 even if a folder lacks its own deny file. Internal rewrites
+# (REDIRECT_STATUS set) are not affected.
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+RewriteRule ^(?!(?:admin|api)(?:/|$)|(?:index\.php)?$|config/logout\.php$) - [R=404,L]
+
+# The physical code folders are never addressed directly, only through the public URLs below.
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+RewriteRule ^(backend|frontend)(/|$) - [R=404,L]
+
+# The mobile app source is never served, not even through an internal rewrite.
+RewriteRule ^frontend/mobile(/|$) - [R=404,L]
+
+# Bare folder URLs still get their trailing slash, as Apache did before.
+RewriteRule ^(admin|api)$ %{REQUEST_URI}/ [R=301,L]
+
+RewriteRule ^admin/(.*)$ frontend/admin/$1 [L]
+RewriteRule ^api/(.*)$ backend/api/$1 [L]
+
+# Project metadata and tooling files are not public.
+<FilesMatch "^(composer\.(json|lock)|\.gitignore|.+\.(ps1|md|log))$">
+    Require all denied
+</FilesMatch>

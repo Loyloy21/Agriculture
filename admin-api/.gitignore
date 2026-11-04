@@ -1,0 +1,43 @@
+/vendor/
+/node_modules/
+/.expo/
+/tools/
+/var/*
+!/var/.htaccess
+/tests/.artifacts/
+/tmp/pdfs/*
+!/tmp/pdfs/.htaccess
+/package-lock.json
+
+# Farmer ID images, report photos and other uploads: never in Git. Only the folders' deny files are kept.
+/uploads/ids/*
+!/uploads/ids/.htaccess
+!/uploads/ids/.gitkeep
+/uploads/reports/*
+!/uploads/reports/.htaccess
+/storage/report-images/*
+!/storage/report-images/.htaccess
+
+# Secrets live in C:\xampp\agrireach-secrets (outside htdocs). These guard against local copies.
+/config/email.local.php
+/backend/config/*.local.php
+*.local.php
+.env
+.env.*
+!.env.example
+*.key
+*.crt
+*.pem
+
+# Backups, archives and database dumps. Schema and migration .sql files are allowed; dumps are not.
+*.zip
+*.7z
+*.rar
+*.tar
+*.gz
+*.bak
+*.dump
+*.backup
+*dump*.sql
+*backup*.sql
+/backups/

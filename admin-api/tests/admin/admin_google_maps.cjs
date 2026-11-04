@@ -1,0 +1,16 @@
+const assert = require('node:assert/strict'), fs = require('node:fs'), vm = require('node:vm');
+const php = fs.readFileSync('frontend/admin/damage-reports.php','utf8');
+const elements = new Map();
+const node = () => ({ hidden:false, href:'', textContent:'', children:[], style:{}, replaceChildren(){this.children=[];}, appendChild(n){this.children.push(n);}, removeAttribute(n){delete this[n];}, addEventListener(){}, parentElement:{querySelector(){return {hidden:false};}} });
+const document = {getElementById(id){if(id==='reportSelectedPhotoPreview')return null;if(!elements.has(id))elements.set(id,node());return elements.get(id);},querySelectorAll(){return [];},createElement:node};
+const pointEvidence = (a,b) => a != null && b != null && Number.isFinite(+a) && Number.isFinite(+b) && Math.abs(+a)<=90 && Math.abs(+b)<=180 && (+a!==0||+b!==0) ? {point:[+a,+b],state:'passed'} : {point:null,state:'unavailable',reason:'No usable coordinates.'};
+const context = {document, pointEvidence, destroyReportMap(){}, formatPoint:p=>p.join(','), googleMapsUrl:p=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.join(',')), photoSourceLabel:p=>p.gps_source || 'Source unavailable',mapMode:'satellite',modalElement:{classList:{contains(){return true;}}}};
+const start=php.indexOf('  let selectedPhotoId ='),end=php.indexOf('  const renderResponseFields =',start);
+vm.runInNewContext(`let activeReport=null; ${php.slice(start,end)}; globalThis.select=(data,id,kind='photo')=>{activeReport=data;selectedPhotoId=id;reviewPointKind=kind;renderReportMap(data);};`,context);
+const data={submitted_latitude:1,submitted_longitude:2,registered_latitude:3,registered_longitude:4,images:[{id:101,gps_latitude:9.1172,gps_longitude:125.5296,gps_source:'photo_exif'},{id:202,gps_latitude:9.1128,gps_longitude:125.5352,gps_source:'device_capture'},{id:303,gps_latitude:null,gps_longitude:null}]};
+context.select(data,101); assert.match(document.getElementById('reportMap').children[0].src,/9\.1172%2C125\.5296.*t=k/);assert.match(document.getElementById('selectedPhotoMapLabel').textContent,/101.*photo_exif/);
+context.select(data,202); assert.match(document.getElementById('mapExternalLink').href,/9\.1128%2C125\.5352/);
+context.select(data,303); assert.equal(document.getElementById('reportMap').children.length,0);assert.equal(document.getElementById('reportMap').hidden,true);assert.equal(document.getElementById('mapExternalLink').href,undefined);
+context.select(data,101,'farm');assert.match(document.getElementById('mapExternalLink').href,/3%2C4/);assert.match(document.getElementById('selectedPhotoMapLabel').textContent,/not photo GPS/);
+context.select(data,101,'report');assert.match(document.getElementById('mapExternalLink').href,/1%2C2/);
+console.log('PASS: Google review preview/link use selected image ID and own saved point; no-GPS clears stale frame/link; farm and main report remain separate.');
