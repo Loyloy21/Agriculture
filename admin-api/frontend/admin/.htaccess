@@ -1,0 +1,5 @@
+# Public admin website, reachable only as /CAPSTONE AGRICULTURE/admin/... (see the project .htaccess).
+# The rest of frontend/ (including the mobile app) stays denied; includes/ is denied again by its own .htaccess.
+Require all granted
+Options -Indexes
+DirectorySlash Off

@@ -1,0 +1,3 @@
+# Private by default. Only frontend/admin/ is public, through the /CAPSTONE AGRICULTURE/admin/ URLs.
+# frontend/mobile/ (the Expo app and its Git repository) is never served.
+Require all denied

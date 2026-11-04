@@ -1,0 +1,7 @@
+<?php
+$sections = [
+    ['Main menu', [['dashboard.php','Dashboard','bi-grid-1x2-fill','dashboard'],['farmer-verification.php','Farmer Verification','bi-person-check','farmer-verification'],['manage-users.php','Manage Users','bi-people','manage-users']]],
+    ['Reports', [['damage-reports.php','Damage Reports','bi-clipboard2-pulse','damage-reports'],['production-report.php','Production Report','bi-bar-chart-line','production-report']]],
+    ['Advisories & settings', [['weather-advisory.php','Weather Advisory','bi-cloud-sun','weather-advisory'],['email-settings.php','Email Settings','bi-envelope-at','email-settings'],['notifications.php','Notifications','bi-bell','notifications'],['settings.php','Settings','bi-gear','settings']]],
+];
+?><nav class="sidebar-nav" aria-label="Admin navigation"><?php foreach ($sections as [$caption, $links]): ?><p class="nav-caption"><?= e($caption) ?></p><?php foreach ($links as $link): ?><a class="sidebar-link <?= $active_page === $link[3] ? 'active' : '' ?>" href="<?= e($link[0]) ?>"<?= $active_page === $link[3] ? ' aria-current="page"' : '' ?>><i class="bi <?= e($link[2]) ?>"></i><span><?= e($link[1]) ?></span></a><?php endforeach; ?><?php endforeach; ?></nav><div class="sidebar-locality"><i class="bi bi-geo-alt" aria-hidden="true"></i> Cabadbaran City<br>Agusan del Norte</div><div class="sidebar-bottom"><a class="sidebar-link logout-link" href="logout.php"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a></div>

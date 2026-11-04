@@ -1,0 +1,5 @@
+# Public mobile API routes, reachable only as /CAPSTONE AGRICULTURE/api/... (see the project .htaccess).
+# The rest of backend/ stays denied; backend/api/includes/ is denied again by its own .htaccess.
+Require all granted
+Options -Indexes
+DirectorySlash Off
